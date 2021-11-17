@@ -1,17 +1,16 @@
 const express = require("express")
 const app = express();
-const mongoose = require("mongoose");
-// const cookieSession = require("cookie-session")
+const mongoose = require("mongoose")
 const passport = require("passport")
-const dotenv = require("dotenv");
+const dotenv = require("dotenv")
 const session = require("express-session")
+const MongoStore = require("connect-mongo")(session)
 const userRouter = require("./routes/users")
 const authRouter = require("./routes/auth")
 const productRouter = require("./routes/product")
 const cartRouter = require("./routes/cart")
 const orderRouter = require("./routes/order")
 const stripeRouter = require("./routes/stripe")
-const passportSetup = require("./passport")
 const cors = require("cors")
 
 //Dotenv Confid
@@ -22,7 +21,7 @@ require("./passport")(passport);
 
 //Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL).then(() => {
-    console.log("Connected to MongoDB")
+    console.log("Connected to MongoDB");
 });
 
 //Express Framework
@@ -31,8 +30,10 @@ app.use(express.json());
 //Session
 app.use(session({
     secret: 'keyboard-cat',
+    maxAge: 24 * 60 * 60 * 100,
     resave: false,
     saveUninitialized: false,
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
 //Passport Middleware

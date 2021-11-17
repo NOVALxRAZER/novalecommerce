@@ -94,14 +94,14 @@ export default function Navbar() {
     
     // console.log(user);
 
-    const handleLogout = () => {
-        window.open("http://localhost:8500/auth/logout", "_self");
-    }
-
     const handleClick = () => {
         myStorage.removeItem("persist:root");
         userLogout();
         history.push("/login");
+    }
+
+    const handleLogout = () => {
+        window.open("http://localhost:8500/auth/logout", "_self");
     }
 
     return (
@@ -117,9 +117,7 @@ export default function Navbar() {
                             <UserImage src={user?.image}/>
                             <UserItem>{user?.displayName || player?.username}</UserItem>
                             {user ? (
-                                <>
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                                </>
                             ) : (
                                 null
                             )}
