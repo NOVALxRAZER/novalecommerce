@@ -152,3 +152,8 @@
     color: white;
     font-weight: 600;
 }
+
+.newUserSelect{
+  width: 255px;
+  margin-top: 5px;
+}

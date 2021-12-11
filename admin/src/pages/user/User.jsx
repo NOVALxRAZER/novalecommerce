@@ -8,35 +8,22 @@ import {
 } from "@material-ui/icons";
 import app from "../../firebase";
 import {getStorage, ref, uploadBytesResumable, getDownloadURL} from "firebase/storage"
-import { addUser, updateUser } from "../../redux/apiCalls";
-import { useState } from "react";
-// import { useEffect } from "react";
+import { updateUser } from "../../redux/apiCalls";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
-// import { userRequest } from "../../requestMethods";
 import "./user.css";
 
 export default function User() {
-  const [inputs, setInputs] = useState({})
+  const [inputs, setInputs] = useState({});
   const [file, setFile] = useState(null)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const location = useLocation();
   const playerId = location.pathname.split("/")[2];
+  const adminRef = useRef();
 
   const player = useSelector((state) => state.user.currentUser.find((user) => user._id === playerId));
-
-  // useEffect(() => {
-  //   const updateUser = async (req, res) => {
-  //     try {
-  //       const res = await userRequest.put(`http://localhost:8500/api/users/` + playerId);
-  //       setInputs(res.data)
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-  //   updateUser();
-  // }, [playerId]);
 
   const handleChange = (e) => {
     setInputs(prev => {
@@ -47,9 +34,7 @@ export default function User() {
   const handleClick = (e) => {
     e.preventDefault();
 
-    updateUser(dispatch);
-
-    const fileName = new Date().getTime() + item.file.name;
+    const fileName = new Date().getTime() + file.name;
     const storage = getStorage(app);
     const StorageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(StorageRef, file);
@@ -78,8 +63,11 @@ export default function User() {
     // Handle successful uploads on complete
     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
       getDownloadURL(uploadTask.snapshot.ref).then(function(downloadURL) {
-        const newUser = { ...inputs, image:downloadURL };
-        addUser(newUser, dispatch);
+        dispatch(updateUser(playerId,{
+          ...inputs,
+          image:downloadURL,
+          isAdmin: adminRef.current.value,
+        }))
       });
     });
   }
@@ -96,13 +84,13 @@ export default function User() {
         <div className="userShow">
           <div className="userShowTop">
             <img
-              src={player.image || "https://www.kindpng.com/picc/m/22-223863_no-avatar-png-circle-transparent-png.png"}
+              src={player ? player.image : "https://icon-library.com/images/no-user-image-icon/no-user-image-icon-26.jpg"}
               alt=""
               className="userShowImg"
             />
             <div className="userShowTopTitle">
               <span className="userShowUsername">{player.username}</span>
-              <span className="userShowUserTitle">Software Engineer</span>
+              <span className="userShowUserTitle">Happy Me</span>
             </div>
           </div>
           <div className="userShowBottom">
@@ -118,7 +106,7 @@ export default function User() {
             <span className="userShowTitle">Contact Details</span>
             <div className="userShowInfo">
               <PhoneAndroid className="userShowIcon" />
-              <span className="userShowInfoTitle">+1 123 456 67</span>
+              <span className="userShowInfoTitle">{player.phone}</span>
             </div>
             <div className="userShowInfo">
               <MailOutline className="userShowIcon" />
@@ -126,7 +114,7 @@ export default function User() {
             </div>
             <div className="userShowInfo">
               <LocationSearching className="userShowIcon" />
-              <span className="userShowInfoTitle">New York | USA</span>
+              <span className="userShowInfoTitle">{player.address}</span>
             </div>
           </div>
         </div>
@@ -174,12 +162,24 @@ export default function User() {
                   onChange={handleChange}
                 />
               </div>
+              <div className="userUpdateItem">
+                <label>Admin</label>
+                <select 
+                  className="newUserSelect" 
+                  name="isAdmin" 
+                  id="active"
+                  ref={adminRef}
+                  >
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+              </div>
             </div>
             <div className="userUpdateRight">
               <div className="userUpdateUpload">
                 <img
                   className="userUpdateImg"
-                  src={player.image || "https://www.kindpng.com/picc/m/22-223863_no-avatar-png-circle-transparent-png.png"}
+                  src={player.image || "https://icon-library.com/images/no-user-image-icon/no-user-image-icon-26.jpg"}
                   alt=""
                 />
                 <label htmlFor="file">

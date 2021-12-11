@@ -48,11 +48,34 @@ const Link = styled.a`
     justify-content: space-around;
 `
 const Button = styled.button`
-    width: 40%;
+    width: 30%;
+    height: 45px;
     border: none;
     padding: 15px 20px;
-    background-color: green;
-    color: black;
+    background-color: #039e03;
+    color: white;
+    margin-bottom: 10px;
+    font-weight: bold;
+    margin-left: 70px;
+    border-radius: 5px;
+    cursor: pointer;
+`
+const LoginButton = styled.button`
+    background-color: blue;
+    border: none;
+    width: 250px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 15px;
+    text-decoration: none;
+    margin-bottom: 10px;
+    margin-top: -16px;
+    margin-left: 70px;
     cursor: pointer;
 `
 
@@ -74,7 +97,7 @@ export default function Register() {
     //     } catch (err) {}
     // }
 
-    const handleClick = async (e) => {
+    const handleClick = (e) => {
         e.preventDefault();
         try {
             register(dispatch, { 
@@ -99,7 +122,9 @@ export default function Register() {
                         By Creating an Account, I consent to the processing my Personal Data in accordance with the <b>PRIVACY POLICY</b>
                     </Aggrement>
                     <Button onClick={handleClick}>CREATE</Button>
-                    <Link href="/login">Have an Account? Sign Up Now</Link>
+                    <Link href="/login">
+                        <LoginButton>Have an Account? Login Now!</LoginButton>
+                    </Link>
                 </Form>
             </Wrapper>
         </Container>

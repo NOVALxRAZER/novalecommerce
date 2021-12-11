@@ -1,17 +1,17 @@
 export const sliderItems = [
     {
       id: 1,
-      img: "https://dl.kaskus.id/i.ibb.co/x6Vf7YS/3.jpg",
-      title: "RAZER x GENSHIN CHAIR BUNDLE",
-      desc: "FEEL THE COMFORT FOR GAMING EXPERIENCE",
-      bg: "E6EDE0",
-    },
-    {
-      id: 2,
       img: "https://geekculture.co/wp-content/uploads/2021/10/razer-genshin-impact-1-1200x909.jpg",
       title: "RAZER DEATHADDER x GENSHIN MOUSEPAD",
       desc: "MORE ACCURATE WITH COMFORT MOUSEPAD",
       bg: "FFF1F1",
+    },
+    {
+      id: 2,
+      img: "https://dl.kaskus.id/i.ibb.co/x6Vf7YS/3.jpg",
+      title: "RAZER x GENSHIN CHAIR BUNDLE",
+      desc: "FEEL THE COMFORT FOR GAMING EXPERIENCE",
+      bg: "E6EDE0",
     },
     {
       id: 3,

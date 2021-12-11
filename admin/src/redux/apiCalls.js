@@ -28,7 +28,6 @@ import {
     addProductStart,
     addProductSuccess,
     addProductFailure } from "./productRedux";
-import axios from "axios";
 
 export const login = async (dispatch,user) => {
     dispatch(loginStart());
@@ -60,13 +59,16 @@ export const addUser = async (user, dispatch) => {
     }
 };
 
-export const updateUser = async (currentUser, dispatch) => {
-    dispatch(updateUserStart());
-    try {
-        const res = await axios.put(`/users` + currentUser)
-        dispatch(updateUserSuccess(res.data));
-    } catch (err) {
-        dispatch(updateUserFailure());
+export const updateUser = (id, user) => {
+    return (dispatch) => {
+        dispatch(updateUserStart());
+        try {
+            const res = userRequest.put(`/users/${id}`, user)
+            // console.log(res.data, "ini res data")
+            dispatch(updateUserSuccess(res.data));
+        } catch (err) {
+            dispatch(updateUserFailure());
+        }
     }
 };
 
@@ -100,13 +102,15 @@ export const deleteProduct = async (id, dispatch) => {
     }
 };
 
-export const updateProduct = async (id, product, dispatch) => {
-    dispatch(updateProductStart());
-    try {
-        // const res = await userRequest.put(`/products/${id}`)
-        dispatch(updateProductSuccess({id, product}));
-    } catch (err) {
-        dispatch(updateProductFailure());
+export const updateProduct = (id, product) => {
+    return (dispatch) => {
+        dispatch(updateProductStart());
+        try {
+            const res = userRequest.put(`/products/${id}`, product)
+            dispatch(updateProductSuccess(res.data));
+        } catch (err) {
+            dispatch(updateProductFailure());
+        }
     }
 };
 

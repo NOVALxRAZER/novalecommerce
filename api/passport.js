@@ -10,6 +10,7 @@ module.exports = function (passport) {
         callbackURL: "http://localhost:8500/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
+        console.log(profile, "ini profile")
         const newUser = {
             googleId: profile.id,
             displayName: profile.name.givenName,

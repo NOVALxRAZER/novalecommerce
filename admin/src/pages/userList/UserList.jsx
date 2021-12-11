@@ -1,7 +1,6 @@
 import "./userList.css";
 import { DataGrid } from "@material-ui/data-grid";
 import { DeleteOutline } from "@material-ui/icons";
-// import { userRows } from "../../dummyData";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,9 +25,10 @@ export default function UserList() {
       headerName: "Username",
       width: 200,
       renderCell: (params) => {
+        console.log(params, "ini params")
         return (
           <div className="userListUser">
-            <img className="userListImg" src={params.row.avatar} alt="" />
+            <img className="userListImg" src={params.row.image} alt="" />
             {params.row.username}
           </div>
         );
@@ -72,7 +72,7 @@ export default function UserList() {
         disableSelectionOnClick
         columns={columns}
         getRowId={(row) => row._id}
-        pageSize={8}
+        pageSize={10}
         checkboxSelection
       />
     </div>

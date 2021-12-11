@@ -39,11 +39,31 @@ app.use(session({
 //Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors({
-    origin: "http://localhost:3000",
-    methods: "GET,PUT,POST,DELETE",
-    credentials: true
-}));
+
+//CORS Whitelist
+let whitelist = [
+    `http://localhost:3000/`,
+    `http://localhost:4000/`,
+    `http://localhost:8500/`,
+    `https://accounts.google.com/`
+];
+
+let corsOptionsDelegate =  (req, callback) => {
+    let corsOptions;
+    if(whitelist.indexOf(req.header('Referer')) !== -1){
+        // console.log(req.header('Referer'));
+        corsOptions = {
+            origin: true,
+            methods: "GET,POST,PUT,DELETE",
+            credentials: true,
+        }
+        callback(null, corsOptions)
+    }else{
+        callback(new Error('Not Allowed by CORS'))
+    }
+}
+//CORS
+app.use(cors(corsOptionsDelegate))
 
 //Routers
 app.use("/users", userRouter);

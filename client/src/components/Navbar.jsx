@@ -1,11 +1,15 @@
 import { Badge } from '@material-ui/core'
-import { ShoppingCartOutlined } from '@material-ui/icons'
+import { ShoppingCartOutlined, ArrowDropDown } from '@material-ui/icons'
 import styled from 'styled-components'
 import {mobile} from "../responsive"
-import {useSelector} from "react-redux"
+import {useSelector, useDispatch} from "react-redux"
 import {Link, useHistory} from "react-router-dom"
 import { userLogout } from '../redux/apiCalls'
 import { useEffect, useState } from 'react'
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Fade from '@mui/material/Fade';
 
 const Container = styled.div`
     height: 60px;
@@ -51,7 +55,7 @@ const UserImage = styled.img`
     object-fit: cover;
     margin-right: 10px;
 `
-const MenuItem = styled.div`
+const MenuItems = styled.div`
     font-size: 20px;
     font-weight: 500;
     cursor: pointer;
@@ -63,9 +67,12 @@ const MenuItem = styled.div`
 export default function Navbar() {
     const quantity = useSelector(state => state.cart.quantity);
     const history = useHistory();
+    const dispatch = useDispatch()
     const myStorage = window.localStorage;
     const player = useSelector(state => state.user.currentUser);
     const [user, setUser] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
 
     useEffect(() => {
         const getUser = () => {
@@ -91,12 +98,18 @@ export default function Navbar() {
         };
         getUser();
     }, []);
-    
-    // console.log(user);
+
+    const handleAnchor = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     const handleClick = () => {
+        userLogout(dispatch);
         myStorage.removeItem("persist:root");
-        userLogout();
         history.push("/login");
     }
 
@@ -115,32 +128,57 @@ export default function Navbar() {
                     {user || player ? (
                         <>
                             <UserImage src={user?.image}/>
-                            <UserItem>{user?.displayName || player?.username}</UserItem>
+                            <UserImage src={player?.image}/>
+                            <Button
+                                id="demo-positioned-button"
+                                aria-controls="demo-positioned-menu"
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleAnchor}
+                                style={{textDecoration:"none", color:"black"}}
+                            >
+                                <UserItem style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                                    {user?.displayName || player?.username}<ArrowDropDown/>
+                                </UserItem>
+                            </Button>
                             {user ? (
-                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                    <MenuItems onClick={handleLogout}>Logout</MenuItems>
                             ) : (
                                 null
                             )}
                             {player ? (
                                 <Link to="/login" style={{textDecoration:"none", color:"black"}}>
-                                    <MenuItem onClick={handleClick}>Logout</MenuItem>
+                                    <MenuItems onClick={handleClick}>Logout</MenuItems>
                                 </Link>
                             ) : (
                                 null
                             )}
                         </>
-                    ) : (
+                        ) : (
                         <Link to="/login" style={{textDecoration:"none", color:"black"}}>
-                            <MenuItem>Login</MenuItem>
+                            <MenuItems>Login</MenuItems>
                         </Link>
                     )}
                     <Link to="/cart" style={{textDecoration:"none", color:"black"}}>
-                    <MenuItem>
-                        <Badge badgeContent={quantity} color="primary">
-                            <ShoppingCartOutlined />
-                        </Badge>
-                    </MenuItem>
+                        <MenuItems>
+                            <Badge badgeContent={quantity} color="primary">
+                                <ShoppingCartOutlined />
+                            </Badge>
+                        </MenuItems>
                     </Link>
+                    <Menu
+                        id="fade-menu"
+                        MenuListProps={{
+                        'aria-labelledby': 'fade-button',
+                        }}
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        TransitionComponent={Fade}
+                    >
+                        <MenuItem onClick={handleClose}>Profile</MenuItem>
+                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    </Menu>
                 </Right>
             </Wrapper>
         </Container>

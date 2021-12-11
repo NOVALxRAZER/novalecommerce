@@ -16,6 +16,7 @@ export default function WidgetSm() {
     }
     getUsers();
   }, []);
+  
   return (
     <div className="widgetSm">
       <span className="widgetSmTitle">New Join Members</span>
@@ -23,7 +24,7 @@ export default function WidgetSm() {
         {users.map((user) => (
         <li className="widgetSmListItem" key={user._id}>
           <img
-            src={user.img || "https://www.kindpng.com/picc/m/22-223863_no-avatar-png-circle-transparent-png.png"}
+            src={users ? user.image : "https://www.kindpng.com/picc/m/22-223863_no-avatar-png-circle-transparent-png.png"}
             alt=""
             className="widgetSmImg"
           />

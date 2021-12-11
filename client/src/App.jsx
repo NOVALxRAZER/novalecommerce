@@ -44,32 +44,44 @@ const App = () => {
     getUser();
   }, []);
 
+  useEffect(() => {
+    if(users){
+      setUser(users)
+    }else{
+      setUser(null)
+    }
+  }, [users])
+
   // console.log(user);
 
   return (
     <Router>
       <Switch>
-      <Route path="/login">
-          {user || users ? <Redirect to="/" /> : <Login />}
+        <Route exact path="/">
+          {user || users ? <Home /> : <Redirect to="/login"/>}
+        </Route>
+        <Route path="/login">
+          {!user || !users ? <Login /> : <Redirect to="/" />}
         </Route>
         <Route path="/register">
-          {user || users ? <Redirect to="/" /> : <Register />}
-        </Route>
-        <Route exact path="/">
-          <Home />
+          {!user || !users ? <Register /> : <Redirect to="/" />}
         </Route>
         <Route path="/products/:category">
           <ProductList />
         </Route>
-        <Route path="/product/:id">
-          <Product />
-        </Route>
-        <Route path="/cart">
-          <Cart />
-        </Route>
-        <Route path="/success">
-          <Success />
-        </Route>
+        {(user || users) && (
+          <>
+            <Route path="/product/:id">
+              <Product />
+            </Route>
+            <Route path="/cart">
+              <Cart />
+            </Route>
+            <Route path="/success">
+              <Success />
+            </Route>
+          </>
+        )}
       </Switch>
     </Router>
   );

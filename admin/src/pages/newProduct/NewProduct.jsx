@@ -16,13 +16,14 @@ export default function NewProduct() {
       return {...prev, [e.target.name]: e.target.value}
     });
   }
+  
   const handleCat = (e) => {
     setCat(e.target.value.split(","))
   }
 
   const handleClick = (e) => {
     e.preventDefault();
-    const fileName = new Date().getTime() + item.file.name;
+    const fileName = new Date().getTime() + file.name;
     const storage = getStorage(app);
     const StorageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(StorageRef, file);

@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { login } from "../redux/apiCalls"
 import { mobile } from "../responsive"
 import { useHistory } from "react-router"
-
+import GoogleIcon from '@mui/icons-material/Google';
 
 const Container = styled.div`
     width: 100vw;
@@ -39,11 +39,11 @@ const Input = styled.input`
     padding: 10px;
 `
 const Button = styled.button`
-    width: 40%;
+    width: 190px;
     border: none;
     padding: 15px 20px;
-    background-color: green;
-    color: black;
+    background-color: #039e03;
+    color: white;
     margin-bottom: 10px;
     font-weight: bold;
     border-radius: 5px;
@@ -74,10 +74,10 @@ const Or = styled.span`
     color: gray;
     font-weight: bold;
 `
-const Google = styled.div`
+const GoogleButton = styled.button`
     background-color: red;
     border: none;
-    width: 150px;
+    width: 200px;
     padding: 15px 20px;
     border-radius: 5px;
     color: white;
@@ -85,6 +85,31 @@ const Google = styled.div`
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+`
+const Span = styled.span`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-top: 5px;
+    margin-bottom: 5px;
+`
+const RegisterButton = styled.button`
+    background-color: blue;
+    border: none;
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 15px;
+    text-decoration: none;
     margin-bottom: 10px;
     cursor: pointer;
 `
@@ -94,7 +119,16 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const history = useHistory();
-    const { isFetching, error } = useSelector((state) => state.user);
+    const { isFetching, error } = useSelector((state) => {
+        return state.user
+    });
+
+    // const handleKeyDown = (event) => {
+    //     if(event.charCode === 13){
+    //         login(dispatch, { username, password });
+    //     }
+    //     history.push("/")
+    // }
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -114,12 +148,15 @@ export default function Login() {
                     <Input placeholder="Username" onChange={(e) => setUsername(e.target.value)}/>
                     <Input placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)}/>
                     <Center>
-                    <Button onClick={handleClick} disabled={isFetching}>LOGIN</Button>
-                    <Or>OR</Or>
-                    <Google onClick={google}>Login With Google</Google>
+                        <Button onClick={handleClick} disabled={isFetching}>LOGIN</Button>
+                        <Or>OR</Or>
+                        <GoogleButton onClick={google}><GoogleIcon style={{marginLeft: "-10px", marginRight: "10px"}}/>Login With Google</GoogleButton>
                     </Center>
                     {error && <Error>Username or Password is Wrong</Error>}
-                    <Link href="/register">Create a New Account</Link>
+                    <Span>Don't have any Account?</Span>
+                    <Link href="/register">
+                        <RegisterButton>Create a New Account</RegisterButton>
+                    </Link>
                 </Form>
             </Wrapper>
         </Container>

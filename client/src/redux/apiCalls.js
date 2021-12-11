@@ -34,6 +34,6 @@ export const register = async (dispatch, user) => {
     }
 }
 
-export const userLogout = () => {
-        logout();
+export const userLogout = (dispatch) => {
+    dispatch(logout());
 }

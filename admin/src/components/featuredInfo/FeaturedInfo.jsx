@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { userRequest } from "../../requestMethods";
 
 export default function FeaturedInfo() {
+  // eslint-disable-next-line
   const [income, setIncome] = useState([]);
   const [perc, setPerc] = useState(0);
 
