@@ -25,6 +25,7 @@ const Info = styled.div`
 const Title = styled.h1`
     color: #02b902;
     margin-bottom: 20px;
+    text-shadow: #000 0px 0px 3px;
 `
 
 const Button = styled.button`

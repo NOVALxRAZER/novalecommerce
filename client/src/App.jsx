@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Product from "./pages/Product";
 import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
+import Profile from "./pages/Profile"
 import {
   BrowserRouter as Router,
   Switch,
@@ -68,6 +69,9 @@ const App = () => {
         </Route>
         <Route path="/products/:category">
           <ProductList />
+        </Route>
+        <Route path="/profile">
+          <Profile/>
         </Route>
         {(user || users) && (
           <>

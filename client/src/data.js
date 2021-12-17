@@ -37,7 +37,7 @@ export const sliderItems = [
     },
     {
       id: 3,
-      img: "https://obs.line-scdn.net/0h5e_cFwMwakpiGn138tQVHVpMZjtRfHBDQCsgexASNn5HNnocXy45KUNNZGYfKypPQn4le04aYC1OKigaDQ/w644",
+      img: "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/11/21/5eee7aa1-f94c-48ea-9453-7a7662bb3327.jpg",
       title: "MOUSE / MOUSEPAD",
       cat: "mouse"
     },

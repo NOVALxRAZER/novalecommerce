@@ -1,5 +1,4 @@
-import { Add, Remove } from '@material-ui/icons'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import Announcement from '../components/Announcement'
 import Footer from '../components/Footer'
@@ -9,6 +8,7 @@ import StripeCheckout from 'react-stripe-checkout'
 import { useEffect, useState } from 'react'
 import { userRequest } from '../requestMethods'
 import { useHistory } from 'react-router'
+import { deleteCart, deleteProduct } from '../redux/cartRedux'
 
 const KEY = process.env.REACT_APP_STRIPE;
 
@@ -27,6 +27,15 @@ const Top = styled.div`
     justify-content: space-between;
     padding: 20px;
 `
+const DeleteAllButton = styled.div`
+    border-radius: 5px;
+    border: none;
+    padding: 9px;
+    cursor: pointer;
+    background-color: red;
+    color: white;
+    font-weight: 600;
+`
 const TopButton = styled.button`
     padding: 10px;
     font-weight: 600;
@@ -44,6 +53,7 @@ const TopText = styled.span`
     justify-content: center;
     cursor: pointer;
     margin: 0px 10px;
+    font-weight: 600;
 `
 const Bottom = styled.div`
     display: flex;
@@ -93,8 +103,15 @@ const ProductAmountContainer = styled.div`
     margin-bottom: 20px;
 `
 const ProductAmount = styled.div`
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 24px;
-    margin: 5px;
+    margin: 0px 5px;
+    border-radius: 10px;
+    border: 1px solid green;
     ${mobile({margin: "5px 15px"})}
 `
 const ProductPrice = styled.div`
@@ -136,12 +153,25 @@ const Button = styled.button`
     font-weight: 600;
     cursor: pointer;
 `
+const DeleteProduct = styled.div`
+    border-radius: 5px;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    background-color: red;
+    color: white;
+    margin-top: 15px;
+    font-weight: 600;
+`
 
 export default function Cart() {
     const cart = useSelector(state => state.cart)
-    const quantity = useSelector(state => state.cart.quantity);
+    const shoppingBag = useSelector(state => state.cart.quantity);
     const [stripeToken, setStripeToken] = useState(null);
     const history = useHistory();
+    const dispatch = useDispatch();
+
+    console.log(cart, "ini cart")
 
     const onToken = token => {
         setStripeToken(token);
@@ -162,6 +192,16 @@ export default function Cart() {
         };
         stripeToken && makeRequest();
     }, [stripeToken, cart.total, history, cart]);
+
+    const handleDelete = (id, cart) => {
+        let filtered = cart.products.filter(function(val) { return val._id !== id });
+        dispatch(deleteProduct({cart : filtered}))
+    }
+
+    const handleDeleteAll = (id) => {
+        dispatch(deleteCart(id));
+    }
+
     return (
         <Container>
             <Navbar/>
@@ -169,9 +209,13 @@ export default function Cart() {
             <Wrapper>
                 <Title>SHOPPING BAG</Title>
                 <Top>
-                    <TopButton>CONTINUE SHOPPING</TopButton>
+                    {shoppingBag >= 2 ? (
+                        <DeleteAllButton onClick={handleDeleteAll}>Delete All Products</DeleteAllButton>
+                    ) : (
+                        null
+                    )}
                     <TopTexts>
-                        <TopText>Shopping Bag ({quantity})</TopText>
+                        <TopText>Shopping Bag ({shoppingBag})</TopText>
                     </TopTexts>
                     <TopButton type="filled">CHECKOUT NOW</TopButton>
                 </Top>
@@ -189,11 +233,10 @@ export default function Cart() {
                             </ProductDetail>
                             <PriceDetail>
                                 <ProductAmountContainer>
-                                    <Remove cursor="pointer"/>
-                                    <ProductAmount>{product.quantity}</ProductAmount>
-                                    <Add cursor="pointer"/>
+                                        <ProductAmount>{product.quantity}</ProductAmount>
                                 </ProductAmountContainer>
                                 <ProductPrice>$ {product.price*product.quantity}</ProductPrice>
+                                <DeleteProduct onClick={() => handleDelete(product._id, cart)}>Delete Product</DeleteProduct>
                             </PriceDetail>
                         </Product>
                         ))}

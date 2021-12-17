@@ -3,7 +3,7 @@ import { ShoppingCartOutlined, ArrowDropDown } from '@material-ui/icons'
 import styled from 'styled-components'
 import {mobile} from "../responsive"
 import {useSelector, useDispatch} from "react-redux"
-import {Link, useHistory} from "react-router-dom"
+import {Link} from "react-router-dom"
 import { userLogout } from '../redux/apiCalls'
 import { useEffect, useState } from 'react'
 import Button from '@mui/material/Button';
@@ -49,8 +49,8 @@ const UserItem = styled.span`
     font-weight: 500;
 `
 const UserImage = styled.img`
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
     margin-right: 10px;
@@ -66,7 +66,6 @@ const MenuItems = styled.div`
 
 export default function Navbar() {
     const quantity = useSelector(state => state.cart.quantity);
-    const history = useHistory();
     const dispatch = useDispatch()
     const myStorage = window.localStorage;
     const player = useSelector(state => state.user.currentUser);
@@ -110,7 +109,6 @@ export default function Navbar() {
     const handleClick = () => {
         userLogout(dispatch);
         myStorage.removeItem("persist:root");
-        history.push("/login");
     }
 
     const handleLogout = () => {
@@ -121,14 +119,22 @@ export default function Navbar() {
         <Container>
             <Wrapper>
                 <Left>
-                    
+
                 </Left>
                 <Center><Link to="/" style={{textDecoration:"none", color:"inherit"}}><Logo>RAZER x GENSHIN</Logo></Link></Center>
                 <Right>
                     {user || player ? (
                         <>
-                            <UserImage src={user?.image}/>
-                            <UserImage src={player?.image}/>
+                            {user ? (
+                                <UserImage src={user?.image}/>
+                            ) : ( 
+                                null 
+                            )}
+                            {player ? (
+                                <UserImage src={player?.image}/>
+                            ) : ( 
+                                null 
+                            )}
                             <Button
                                 id="demo-positioned-button"
                                 aria-controls="demo-positioned-menu"
@@ -176,8 +182,9 @@ export default function Navbar() {
                         onClose={handleClose}
                         TransitionComponent={Fade}
                     >
-                        <MenuItem onClick={handleClose}>Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        <Link to={`/profile/${player._id}`} style={{textDecoration:"none", color:"black"}}>
+                            <MenuItem>Profile</MenuItem>
+                        </Link>
                     </Menu>
                 </Right>
             </Wrapper>

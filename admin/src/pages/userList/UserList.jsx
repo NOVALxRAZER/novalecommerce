@@ -25,7 +25,6 @@ export default function UserList() {
       headerName: "Username",
       width: 200,
       renderCell: (params) => {
-        console.log(params, "ini params")
         return (
           <div className="userListUser">
             <img className="userListImg" src={params.row.image} alt="" />

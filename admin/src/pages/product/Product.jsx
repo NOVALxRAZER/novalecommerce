@@ -21,6 +21,8 @@ export default function Product() {
     // eslint-disable-next-line
     const [pStats, setPStats] = useState([]);
     const stockRef = useRef();
+    const colorRef = useRef();
+    const catRef = useRef();
 
     const product = useSelector((state) => state.product.products.find((product) => product._id === productId));
 
@@ -93,6 +95,8 @@ export default function Product() {
               ...inputs,
               img:downloadURL,
               inStock: stockRef.current.value,
+              color: colorRef.current.value,
+              categories: catRef.current.value,
             }))
           });
         });
@@ -137,11 +141,26 @@ export default function Product() {
                   <label>Product Name</label>
                   <input name="title" type="text" placeholder={product.title} onChange={handleChange}/>
                   <label>Category</label>
-                  <input name="categories" type="text" placeholder={product.categories} onChange={handleChange}/>
+                  <select name="categories" id="idCategories" ref={catRef}>
+                      <option value="keyboard">Keyboard</option>
+                      <option value="mouse">Mouse</option>
+                      <option value="headset">Headset</option>
+                  </select>
                   <label>Description</label>
                   <input name="desc" type="text" placeholder={product.desc} onChange={handleChange}/>
                   <label>Price</label>
                   <input name="price" type="text" placeholder={product.price} onChange={handleChange}/>
+                  <label>Color</label>
+                  <select name="color" id="idColor" ref={colorRef}>
+                      <option value="black">Black</option>
+                      <option value="green">Green</option>
+                      <option value="white">White</option>
+                      <option value="grey">Grey</option>
+                      <option value="pink">Pink</option>
+                      <option value="red">Red</option>
+                      <option value="blue">Blue</option>
+                      <option value="yellow">Yellow</option>
+                  </select>
                   <label>In Stock</label>
                   <select name="inStock" id="idStock" ref={stockRef}>
                       <option value="true">Yes</option>

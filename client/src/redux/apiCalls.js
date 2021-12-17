@@ -7,7 +7,10 @@ import {
     registerStart,
     registerSuccess,
     registerFailure,
-    logout
+    logout,
+    updateUserStart,
+    updateUserSuccess,
+    updateUserFailure,
 } from "./userRedux"
 
 export const login = async (dispatch,user) => {
@@ -37,3 +40,16 @@ export const register = async (dispatch, user) => {
 export const userLogout = (dispatch) => {
     dispatch(logout());
 }
+
+export const updateUser = (id, user) => {
+    return (dispatch) => {
+        dispatch(updateUserStart());
+        try {
+            const res = publicRequest.put(`/users/${id}`, user)
+            // console.log(res.data, "ini res data")
+            dispatch(updateUserSuccess(res.data));
+        } catch (err) {
+            dispatch(updateUserFailure());
+        }
+    }
+};
