@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { useLocation } from "react-router"
 import styled from "styled-components"
-import Announcement from "../components/Announcement"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import Newsletter from "../components/Newsletter"
@@ -53,7 +52,6 @@ export default function ProductList() {
     return (
         <Container>
             <Navbar/>
-            <Announcement/>
             <Title>{cat}</Title>
             <FilterContainer>
                 <Filter>

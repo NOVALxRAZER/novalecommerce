@@ -13,7 +13,6 @@ import {
 } from "react-router-dom";
 import Success from "./pages/Success";
 import { useSelector } from "react-redux";
-// import axios from "axios";
 import { useEffect, useState } from "react";
 
 const App = () => {
@@ -53,8 +52,6 @@ const App = () => {
     }
   }, [users])
 
-  // console.log(user);
-
   return (
     <Router>
       <Switch>
@@ -74,7 +71,7 @@ const App = () => {
           <Profile/>
         </Route>
         {(user || users) && (
-          <>
+          <Switch>
             <Route path="/product/:id">
               <Product />
             </Route>
@@ -84,7 +81,7 @@ const App = () => {
             <Route path="/success">
               <Success />
             </Route>
-          </>
+          </Switch>
         )}
       </Switch>
     </Router>

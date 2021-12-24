@@ -42,7 +42,7 @@ app.use(passport.session());
 
 //CORS Whitelist
 // let whitelist = [
-//     `http://localhost:3000/`,
+//     `http://localhost:3001/`,
 //     `http://localhost:4000/`,
 //     `http://localhost:8500/`,
 //     `https://accounts.google.com/`
@@ -67,7 +67,7 @@ app.use(passport.session());
 
 //CORS Whitelist
 let whitelist = [
-    `http://localhost:3000`,
+    `http://localhost:3001`,
     `http://localhost:4000`,
 ];
 

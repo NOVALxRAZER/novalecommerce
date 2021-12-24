@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/User");
+const jwt = require("jsonwebtoken")
 const {verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin} = require("./verifyToken");
 
 //Create a User
@@ -28,7 +29,8 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
         },
             { new: true }
         );
-        res.status(200).json(updatedUser);
+        const { password, ...others } = updatedUser._doc;
+        res.status(200).json(others);
     } catch (err) {
         res.status(500).json(err);
     }
@@ -37,7 +39,7 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
 //Delete a User
 router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {
-        await User.findByIdAndDelete(req.params.id)
+        await User.findByIdAndDelete(req.params.id);
         res.status(200).json("User has been Deleted.")
     } catch (err) {
         res.status(500).json(err)
@@ -45,10 +47,9 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 //Get a User
-router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
-    const query = req.query.new;
+router.get("/find/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {
-        const user = query ? await User.findById(req.params.id) : await User.findById();
+        const user = await User.findById(req.params.id);
         const { password, ...others } = user._doc;
         res.status(200).json(others);
     } catch (err) {
@@ -58,9 +59,8 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
 
 //Get All Users
 router.get("/", verifyTokenAndAdmin, async (req, res) => {
-    const query = req.query.new;
     try {
-        const users = query ? await User.find().sort({_id:-1}).limit(5) : await User.find();
+        const users = await User.find().sort({_id:-1}).limit(5);
         res.status(200).json(users);
     } catch (err) {
         res.status(500).json(err);

@@ -5,6 +5,7 @@ import { login } from "../redux/apiCalls"
 import { mobile } from "../responsive"
 import { useHistory } from "react-router"
 import GoogleIcon from '@mui/icons-material/Google';
+import TextField from '@mui/material/TextField';
 
 const Container = styled.div`
     width: 100vw;
@@ -19,6 +20,7 @@ const Wrapper = styled.div`
     width: 25%;
     padding: 20px;
     background-color: #e5fae5;
+    border-radius: 10px;
     ${mobile({width: "75%"})}
 `
 const Title = styled.h1`
@@ -26,17 +28,19 @@ const Title = styled.h1`
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    font-weight: 500;
+    font-weight: 600;
 `
 const Form = styled.div`
     display: flex;
     flex-direction: column;
 `
-const Input = styled.input`
-    flex: 1;
-    min-width: 40%;
-    margin: 10px 0px;
-    padding: 10px;
+const Label = styled.span`
+    font-size: 15px;
+    font-weight: 400;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    margin-left: 5px;
+    color: #636363;
 `
 const Button = styled.button`
     width: 190px;
@@ -55,17 +59,18 @@ const Button = styled.button`
 const Link = styled.a`
     margin: 5px 0px;
     font-size: 15px;
-    text-decoration: underline;
     cursor: pointer;
     color: inherit;
 `
 const Error = styled.span`
     color: red;
+    margin-top: 15px;
 `
 const Center = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 15px;
 `
 const Or = styled.span`
     display: flex;
@@ -78,6 +83,7 @@ const GoogleButton = styled.button`
     background-color: red;
     border: none;
     width: 200px;
+    height: 47px;
     padding: 15px 20px;
     border-radius: 5px;
     color: white;
@@ -117,23 +123,42 @@ const RegisterButton = styled.button`
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [errors, setErrors] = useState({username});
+    const [errors1, setErrors1] = useState({password});
+    const [values, setValues] = useState({
+        username: '',
+        password: '',
+    })
     const dispatch = useDispatch();
     const history = useHistory();
     const { isFetching, error } = useSelector((state) => {
         return state.user
     });
 
-    // const handleKeyDown = (event) => {
-    //     if(event.charCode === 13){
-    //         login(dispatch, { username, password });
-    //     }
-    //     history.push("/")
-    // }
+    const handleChange = (e) => {
+        setValues({ ...values, [e.target.name]: e.target.value})
+        setErrors({ username: '' })
+        setUsername(e.target.value);
+    }
+
+    const handleChange1 = (e) => {
+        setValues({ ...values, [e.target.name]: e.target.value})
+        setErrors1({ password: '' })
+        setPassword(e.target.value);
+    }
 
     const handleClick = (e) => {
         e.preventDefault();
-        login(dispatch, { username, password });
-        history.push("/");
+        if(!username){
+            setErrors({ username: "Username is Required!" })
+        }if(!password){
+            setErrors1({ password: "Password is Required!" })
+        }if(values.username && values.password){
+            login(dispatch, {
+                ...values,
+            })
+            history.push("/");
+        }
     };
 
     const google = () => {
@@ -145,14 +170,34 @@ export default function Login() {
              <Wrapper>
                 <Title>LOGIN TO YOUR ACCOUNT</Title>
                 <Form>
-                    <Input placeholder="Username" onChange={(e) => setUsername(e.target.value)}/>
-                    <Input placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)}/>
+                    <Label>Username</Label>
+                    <TextField 
+                        label="Username"
+                        id="outlined-basic"
+                        type="text"
+                        name="username"
+                        onChange={handleChange}
+                        required
+                        error={Boolean(errors?.username)}
+                        helperText={(errors?.username)}
+                    />
+                    <Label>Password</Label>
+                    <TextField 
+                        label="Password"
+                        id="outlined-basic"
+                        type="password"
+                        name="password"
+                        onChange={handleChange1}
+                        required
+                        error={Boolean(errors1?.password)}
+                        helperText={(errors1?.password)}
+                    />
+                    {error && <Error>Username or Password is Wrong</Error>}
                     <Center>
                         <Button onClick={handleClick} disabled={isFetching}>LOGIN</Button>
                         <Or>OR</Or>
                         <GoogleButton onClick={google}><GoogleIcon style={{marginLeft: "-10px", marginRight: "10px"}}/>Login With Google</GoogleButton>
                     </Center>
-                    {error && <Error>Username or Password is Wrong</Error>}
                     <Span>Don't have any Account?</Span>
                     <Link href="/register">
                         <RegisterButton>Create a New Account</RegisterButton>

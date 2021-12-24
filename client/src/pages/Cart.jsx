@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import Announcement from '../components/Announcement'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
 import { mobile } from '../responsive'
@@ -9,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { userRequest } from '../requestMethods'
 import { useHistory } from 'react-router'
 import { deleteCart, deleteProduct } from '../redux/cartRedux'
+import { Link } from '@mui/material'
 
 const KEY = process.env.REACT_APP_STRIPE;
 
@@ -37,12 +37,13 @@ const DeleteAllButton = styled.div`
     font-weight: 600;
 `
 const TopButton = styled.button`
-    padding: 10px;
-    font-weight: 600;
+    border-radius: 5px;
+    border: none;
+    padding: 13px;
     cursor: pointer;
-    border: ${props=> props.type === "filled" && "none"};
-    background-color: ${props => props.type === "filled" ? "green" : "transparent"};
-    color: ${props => props.type === "filled" && "white"};
+    background-color: darkblue;
+    color: white;
+    font-weight: 700;
 `
 const TopTexts = styled.div`
     ${mobile({display: "none"})}
@@ -171,8 +172,6 @@ export default function Cart() {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    console.log(cart, "ini cart")
-
     const onToken = token => {
         setStripeToken(token);
     };
@@ -194,8 +193,13 @@ export default function Cart() {
     }, [stripeToken, cart.total, history, cart]);
 
     const handleDelete = (id, cart) => {
-        let filtered = cart.products.filter(function(val) { return val._id !== id });
-        dispatch(deleteProduct({cart : filtered}))
+        let filtered = cart.products.filter(function(val) { 
+            return val._id !== id 
+        });
+        const nextTotal = filtered.map(item => {
+            return item.price * item.quantity;
+        }).reduce((prev, next) => prev+next, 0)
+        dispatch(deleteProduct({ cart : filtered, totalCart: nextTotal }))
     }
 
     const handleDeleteAll = (id) => {
@@ -205,7 +209,6 @@ export default function Cart() {
     return (
         <Container>
             <Navbar/>
-            <Announcement/>
             <Wrapper>
                 <Title>SHOPPING BAG</Title>
                 <Top>
@@ -217,31 +220,33 @@ export default function Cart() {
                     <TopTexts>
                         <TopText>Shopping Bag ({shoppingBag})</TopText>
                     </TopTexts>
-                    <TopButton type="filled">CHECKOUT NOW</TopButton>
+                    <Link href="/">
+                        <TopButton>Back to Homepage</TopButton>
+                    </Link>
                 </Top>
                 <Bottom>
                     <Info>
                         {cart.products.map(product => ( 
-                        <Product key={product._id}>
-                            <ProductDetail>
-                                <Image src={product.img}/>
-                                <Details>
-                                    <ProductName><b>Product : </b>{product.title}</ProductName>
-                                    <ProductId><b>ID : </b>{product._id}</ProductId>
-                                    <ProductColor color={product.color}/>
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <ProductAmountContainer>
+                            <Product key={product._id}>
+                                <ProductDetail>
+                                    <Image src={product.img}/>
+                                    <Details>
+                                        <ProductName><b>Product : </b>{product.title}</ProductName>
+                                        <ProductId><b>ID : </b>{product._id}</ProductId>
+                                        <ProductColor color={product.color}/>
+                                    </Details>
+                                </ProductDetail>
+                                <PriceDetail>
+                                    <ProductAmountContainer>
                                         <ProductAmount>{product.quantity}</ProductAmount>
-                                </ProductAmountContainer>
-                                <ProductPrice>$ {product.price*product.quantity}</ProductPrice>
-                                <DeleteProduct onClick={() => handleDelete(product._id, cart)}>Delete Product</DeleteProduct>
-                            </PriceDetail>
-                        </Product>
+                                    </ProductAmountContainer>
+                                    <ProductPrice>$ {product.price*product.quantity}</ProductPrice>
+                                    <DeleteProduct onClick={() => handleDelete(product._id, cart)}>Delete Product</DeleteProduct>
+                                </PriceDetail>
+                            </Product>
                         ))}
-                        <Hr/>
                     </Info>
+                    <Hr/>
                     <Summary>
                         <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                         <SummaryItem>

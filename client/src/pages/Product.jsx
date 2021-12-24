@@ -2,11 +2,10 @@ import { Add, Remove } from "@material-ui/icons"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router"
 import styled from "styled-components"
-import Announcement from "../components/Announcement"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import Newsletter from "../components/Newsletter"
-import { publicRequest } from "../requestMethods"
+import { userRequest } from "../requestMethods"
 import { mobile } from "../responsive"
 import { useDispatch } from "react-redux"
 import { addProduct } from "../redux/cartRedux"
@@ -114,7 +113,7 @@ export default function Product() {
     useEffect(() => {
         const getProduct = async () => {
             try {
-                const res = await publicRequest.get("/products/find/"+id);
+                const res = await userRequest.get("/products/find/"+id);
                 setProduct(res.data);
             } catch (err) {
                 
@@ -133,12 +132,12 @@ export default function Product() {
 
     const handleClick = () => {
         dispatch(addProduct({ ...product, quantity, color }));
+        alert("Product has been Added to Shopping Bag")
     }
 
     return (
         <Container>
             <Navbar/>
-            <Announcement/>
             <Wrapper>
                 <ImgContainer>
                     <Image src={product.img}/>

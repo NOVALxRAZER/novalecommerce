@@ -2,6 +2,10 @@ import styled from "styled-components"
 
 const Container = styled.div`
     height: 30px;
+    position: sticky;
+    width: 100%;
+    z-index: 999;
+    top: 0;
     background-color: black;
     color: greenyellow;
     display: flex;

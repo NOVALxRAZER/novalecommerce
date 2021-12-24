@@ -9,39 +9,38 @@ const userSlice = createSlice({
     },
     reducers: {
         //Login State
-        loginStart:(state)=>{
-            // console.log('start')
-            state.isFetching=true;
+        loginStart:(state) => {
+            state.isFetching = true;
         },
         loginSuccess:(state,action)=>{
-            // console.log(state, "? ",action,'ini login')
             state.isFetching = false;
-            state.currentUser = action.payload   ;          
+            state.currentUser = action.payload;          
+            state.error = false;
         },
-        loginFailure:(state)=>{
-            state.isFetching=false;
-            state.error=true;
+        loginFailure:(state) => {
+            state.isFetching = false;
+            state.error = true;
         },
         //User Register
-        registerStart:(state)=>{
+        registerStart:(state) => {
             state.isFetching = true;
-            state.error=false;
+            state.error = false;
         },
-        registerSuccess:(state,action)=>{
+        registerSuccess:(state,action) => {
             state.isFetching = false;
             state.currentUser.push(action.payload);
             state.error = false;
         
         },
-        registerFailure:(state)=>{
-            state.isFetching=false;
-            state.error=true;
+        registerFailure:(state) => {
+            state.isFetching = false;
+            state.error = true;
         },
         //User Logout
-        logout:(state)=>{
-            state.currentUser=null;
-            state.isFetching=false;
-            state.error=false;
+        logout:(state) => {
+            state.currentUser = null;
+            state.isFetching = false;
+            state.error = false;
         },
         //Update a User
         updateUserStart: (state) => {
@@ -50,9 +49,7 @@ const userSlice = createSlice({
         },
         updateUserSuccess: (state, action) => {
             state.isFetching = false;
-            state.currentUser[
-                state.currentUser.findIndex((item) => item._id === action.payload._id && action.payload)]
-            = action.payload.currentUser;
+            state.currentUser = {...state.currentUser, ...action.payload};
         },
         updateUserFailure: (state) => {
             state.isFetching = false;

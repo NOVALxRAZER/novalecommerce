@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import styled from "styled-components"
 import { sliderItems } from "../data"
 import { mobile } from "../responsive"
@@ -37,6 +37,24 @@ const Wrapper = styled.div`
     display: flex;
     transition: all 1.5s ease;
     transform: translateX(${(props) => props.slideIndex * -100}vw);
+`
+
+const SlideShow = styled.div`
+    margin: 0 auto;
+    overflow: hidden;
+    max-width: 500px;
+`
+
+const SlideShowSlider = styled.div`
+    white-space: nowrap;
+    transition: ease 1000ms;
+`
+
+const Slides = styled.div`
+    display: inline-block;
+    height: 400px;
+    width: 100%;
+    border-radius: 40px;
 `
 
 const Slide = styled.div`
@@ -82,6 +100,8 @@ const Button = styled.button`
 
 export default function Slider() {
     const [slideIndex, setSlideIndex] = useState(0);
+    const timeoutRef = useRef(null);
+    const delay = 3500;
     const handleClick = (direction) => {
         if(direction === "left"){
             setSlideIndex(slideIndex > 0 ? slideIndex -1 : 2);
@@ -89,6 +109,28 @@ export default function Slider() {
             setSlideIndex(slideIndex < 2 ? slideIndex +1 : 0);
         }
     };
+
+    function resetTimeout() {
+        if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        }
+    }
+
+    useEffect(() => {
+        resetTimeout();
+        timeoutRef.current = setTimeout(
+        () =>
+            setSlideIndex((prevIndex) =>
+            prevIndex === sliderItems.length - 1 ? 0 : prevIndex + 1
+            ),
+        delay
+        );
+
+        return () => {
+        resetTimeout();
+        };
+    }, [slideIndex]);
+
     return (
         <Container>
             <Arrow direction="left" onClick={()=> handleClick("left")}>
@@ -108,6 +150,18 @@ export default function Slider() {
                 </Slide>
                 ))}
             </Wrapper>
+            <SlideShow>
+                <SlideShowSlider
+                    style={{ transform: `translate3d(${-slideIndex * 100}%, 0, 0)` }}
+                >
+                    {sliderItems.map((bg, index) => (
+                    <Slides
+                        key={index}
+                        style={{ bg }}
+                    ></Slides>
+                    ))}
+                </SlideShowSlider>
+            </SlideShow>
             <Arrow direction="right" onClick={()=> handleClick("right")}>
                 <ArrowRightOutlined/>
             </Arrow>

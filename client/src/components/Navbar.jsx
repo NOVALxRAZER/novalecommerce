@@ -13,6 +13,10 @@ import Fade from '@mui/material/Fade';
 
 const Container = styled.div`
     height: 60px;
+    position: sticky;
+    width: 100%;
+    z-index: 999;
+    top: 0;
     background-color: green;
     ${mobile({height: "50px"})}
 `
@@ -144,7 +148,7 @@ export default function Navbar() {
                                 style={{textDecoration:"none", color:"black"}}
                             >
                                 <UserItem style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                                    {user?.displayName || player?.username}<ArrowDropDown/>
+                                    {player?.username}<ArrowDropDown/>
                                 </UserItem>
                             </Button>
                             {user ? (

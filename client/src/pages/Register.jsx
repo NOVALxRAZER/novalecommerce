@@ -1,10 +1,10 @@
 import styled from "styled-components"
 import { mobile } from "../responsive"
-import TextField from '@mui/material/TextField';
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { register } from "../redux/apiCalls";
 import { useHistory } from "react-router"
+import TextField from '@mui/material/TextField';
 
 const Container = styled.div`
     width: 100vw;
@@ -96,6 +96,7 @@ export default function Register() {
     const [values, setValues] = useState({
         username: '',
         email: '',
+        tanggal: '',
         password: '',
         confirmPassword: ''
     });
@@ -151,7 +152,7 @@ export default function Register() {
             setErrors2({ pass: "Password is Required" })
         }if(!values.confirmPassword){
             setErrors3({ confPass: "Confirm Password is Required" })
-        }if((values.username,values.email,values.password,values.confirmPassword)){
+        }if(values.username && values.email && values.password && values.confirmPassword){
             register(dispatch, { 
                 ...values,
             });
@@ -190,7 +191,7 @@ export default function Register() {
                     <TextField 
                         label="Password"
                         id="outlined-basic"
-                        // type="password"
+                        type="password"
                         name="password"
                         onChange={handleChange2}
                         required
@@ -201,7 +202,7 @@ export default function Register() {
                     <TextField 
                         label="Confirm Password"
                         id="outlined-basic"
-                        // type="password"
+                        type="password"
                         name="confirmPassword"
                         onChange={handleChange3}
                         required

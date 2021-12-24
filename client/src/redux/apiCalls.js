@@ -1,5 +1,5 @@
 import axios from "axios";
-import { publicRequest } from "../requestMethods";
+import { userRequest } from "../requestMethods";
 import { 
     loginFailure,
     loginStart,
@@ -16,7 +16,7 @@ import {
 export const login = async (dispatch,user) => {
     dispatch(loginStart());
     try {
-        const res = await publicRequest.post("/auth/login", user)
+        const res = await userRequest.post("/auth/login", user)
         if(res.status === 200){
             dispatch(loginSuccess(res.data));
         }else{
@@ -41,15 +41,17 @@ export const userLogout = (dispatch) => {
     dispatch(logout());
 }
 
-export const updateUser = (id, user) => {
-    return (dispatch) => {
-        dispatch(updateUserStart());
-        try {
-            const res = publicRequest.put(`/users/${id}`, user)
-            // console.log(res.data, "ini res data")
-            dispatch(updateUserSuccess(res.data));
-        } catch (err) {
-            dispatch(updateUserFailure());
-        }
+export const updateUser = async (id, user, dispatch) => {
+    dispatch(updateUserStart());
+    try {
+        const res = await userRequest.put(`/users/${id}`, user, {
+            headers: {
+                token: "Bearer " + JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser.accessToken,
+            },
+        });
+        console.log(updateUserSuccess(res.data), "ini ini")
+        dispatch(updateUserSuccess(res.data));
+    } catch (err) {
+        dispatch(updateUserFailure());
     }
 };
