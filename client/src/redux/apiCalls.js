@@ -1,9 +1,9 @@
-import axios from "axios";
 import { userRequest } from "../requestMethods";
-import { 
+import {
     loginFailure,
     loginStart,
     loginSuccess,
+    loginGoogleSuccess,
     registerStart,
     registerSuccess,
     registerFailure,
@@ -13,13 +13,13 @@ import {
     updateUserFailure,
 } from "./userRedux"
 
-export const login = async (dispatch,user) => {
+export const login = async (dispatch, user) => {
     dispatch(loginStart());
     try {
         const res = await userRequest.post("/auth/login", user)
-        if(res.status === 200){
+        if (res.status === 200) {
             dispatch(loginSuccess(res.data));
-        }else{
+        } else {
             window.alert(res.statusText)
         }
     } catch (err) {
@@ -27,10 +27,16 @@ export const login = async (dispatch,user) => {
     }
 }
 
+export const loginGoogle = async (dispatch) => {
+    const res = await userRequest.get("/login/success");
+    console.log(res.data, "ini res data")
+    dispatch(loginGoogleSuccess(res.data))
+}
+
 export const register = async (dispatch, user) => {
     dispatch(registerStart());
     try {
-        const res = await axios.post("http://localhost:8500/auth/register", user)
+        const res = await userRequest.post("/auth/register", user)
         dispatch(registerSuccess(res.data));
     } catch (err) {
         dispatch(registerFailure());

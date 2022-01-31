@@ -1,7 +1,7 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const passport = require("passport")
 const mongoose = require("mongoose")
-const GoogleUser = require("../api/models/GoogleUser")
+const GoogleUser = require("./models/GoogleUser")
 
 module.exports = function (passport) {
     passport.use(new GoogleStrategy({
@@ -11,11 +11,14 @@ module.exports = function (passport) {
     },
     async (accessToken, refreshToken, profile, done) => {
         console.log(profile, "ini profile")
+        // console.log(accessToken, "access token")
         const newUser = {
             googleId: profile.id,
-            displayName: profile.name.givenName,
+            email: profile.emails[0].value,
+            username: profile.displayName,
+            firstName: profile.name.familyName,
             lastName: profile.name.familyName,
-            image: profile.photos[0].value
+            image: profile.photos[0].value,
         }
         try {
             let user = await GoogleUser.findOne({ googleId: profile.id })

@@ -1,8 +1,18 @@
 import React from "react";
 import "./topbar.css";
 import { NotificationsNone, Language, Settings } from "@material-ui/icons";
+import { userLogout } from "../../redux/apiCalls";
+import { useDispatch } from "react-redux";
 
 export default function Topbar() {
+  const myStorage = window.localStorage;
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    userLogout(dispatch);
+    myStorage.removeItem("persist:root");
+  }
+
   return (
     <div className="topbar">
       <div className="topbarWrapper">
@@ -10,6 +20,9 @@ export default function Topbar() {
           <span className="logo">Razer Admin</span>
         </div>
         <div className="topRight">
+          <div className="topbarIconContainer">
+            <a href="/login" style={{ textDecoration: "none", color: "black" }} onClick={handleClick}>Logout</a>
+          </div>
           <div className="topbarIconContainer">
             <NotificationsNone />
             <span className="topIconBadge">2</span>

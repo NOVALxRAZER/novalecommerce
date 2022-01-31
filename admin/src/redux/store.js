@@ -1,6 +1,15 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userReducer from "./userRedux";
-import productReducer from "./productRedux";
+import getAllUsersReducer from "./browseUsersRedux/getAllUserRedux";
+import editUserReducer from "./browseUsersRedux/editUserRedux";
+import deleteUserReducer from "./browseUsersRedux/deleteUserRedux";
+import addUserReducer from "./browseUsersRedux/addUserRedux";
+import getUserReducer from "./browseUsersRedux/getUserRedux";
+import getAllProductsReducer from "./browseProductsRedux/getAllProductsRedux"
+import getProductReducer from "./browseProductsRedux/getProductRedux"
+import editProductReducer from "./browseProductsRedux/editProductRedux"
+import deleteProductReducer from "./browseProductsRedux/deleteProductRedux"
+import addProductReducer from "./browseProductsRedux/addProductRedux"
 import {
   persistStore,
   persistReducer,
@@ -21,7 +30,16 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   user: userReducer,
-  product: productReducer,
+  getAllUsers: getAllUsersReducer,
+  editUsers: editUserReducer,
+  deleteUsers: deleteUserReducer,
+  addUsers: addUserReducer,
+  getUser: getUserReducer,
+  getAllProducts: getAllProductsReducer,
+  getProducts: getProductReducer,
+  editProducts: editProductReducer,
+  deleteProducts: deleteProductReducer,
+  addProducts: addProductReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

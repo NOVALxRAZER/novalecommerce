@@ -5,34 +5,48 @@ const CryptoJS = require("crypto-js")
 const jwt = require("jsonwebtoken")
 
 //Google
-router.get("/login/success", (req,res) => {
-    if(req.user) {
-        res.status(200).json({
-            success: true,
-            message: "successfull",
-            user: req.user,
-            // cookies: req.cookies
-        });
+router.get("/login/success", (req, res) => {
+    let reqUser = req.user;
+    try {
+        if (reqUser) {
+            const accessToken = jwt.sign({
+                id: reqUser.googleId,
+                isAdmin: reqUser.isAdmin,
+                userType: 2,
+            },
+                process.env.JWT_SEC,
+                { expiresIn: "1d" }
+            );
+            // console.log(req.params.id, "req user")
+            // console.log(req.user.id, "user id")
+            return res.status(200).json({
+                success: true,
+                message: "successfull",
+                user: { ...reqUser._doc, accessToken },
+            });
+        }
+    } catch (err) {
+        res.status(500).json(err);
     }
 });
 
-router.get("/login/failed", (req,res) => {
+router.get("/login/failed", (req, res) => {
     res.status(401).json({
         success: false,
         message: "failed login",
     });
 });
 
-router.get("/logout", (req,res) => {
+router.get("/logout", (req, res) => {
     req.logout();
-    res.redirect("http://localhost:3000/login");
+    res.redirect("http://localhost:3001/login");
 });
 
-router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
-router.get("/google/callback", passport.authenticate("google", {failureRedirect: "/login/failed"}),
+router.get("/google/callback", passport.authenticate("google", { failureRedirect: "/login/failed" }),
     (req, res) => {
-        res.redirect("http://localhost:3000");
+        res.redirect("http://localhost:3001");
     }
 );
 
@@ -43,7 +57,6 @@ router.post("/register", async (req, res) => {
         email: req.body.email,
         password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString()
     });
-
     try {
         const savedUser = await newUser.save();
         res.status(201).json(savedUser);
@@ -53,11 +66,11 @@ router.post("/register", async (req, res) => {
 });
 
 //Login
-router.post("/login", async (req,res) => {
+router.post("/login", async (req, res) => {
     try {
-        const user = await User.findOne({username: req.body.username});
+        const user = await User.findOne({ username: req.body.username });
         !user && res.status(401).json("Wrong Username");
-
+        console.log(user, 'ini login auth')
         const hashedPassword = CryptoJS.AES.decrypt(user.password, process.env.PASS_SEC);
 
         const pass = hashedPassword.toString(CryptoJS.enc.Utf8);
@@ -66,13 +79,15 @@ router.post("/login", async (req,res) => {
         const accessToken = jwt.sign({
             id: user._id,
             isAdmin: user.isAdmin,
+            userType: 1,
         },
             process.env.JWT_SEC,
-            {expiresIn:"7d"}
+            { expiresIn: "1d" }
         );
-
-        const {password, ...others} = user._doc;
-        return res.status(200).json({...others, accessToken});
+        // console.log(req.params.id, "params id")
+        // console.log(req.user, "ini")
+        const { password, ...others } = user._doc;
+        return res.status(200).json({ ...others, accessToken });
     } catch (err) {
         return res.status(500).json(err);
     }

@@ -1,14 +1,20 @@
 const router = require("express").Router();
 const User = require("../models/User");
+const GoogleUser = require("../models/GoogleUser")
 const jwt = require("jsonwebtoken")
-const {verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin} = require("./verifyToken");
+const CryptoJS = require("crypto-js");
+const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("./verifyToken");
 
 //Create a User
 router.post("/", verifyTokenAndAdmin, async (req, res) => {
     const newUser = new User({
         username: req.body.username,
         email: req.body.email,
-        password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString()
+        password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString(),
+        phone: req.body.phone,
+        address: req.body.address,
+        image: req.body.image,
+        isAdmin: req.body.isAdmin,
     });
     try {
         const savedUser = await newUser.save();
@@ -18,19 +24,35 @@ router.post("/", verifyTokenAndAdmin, async (req, res) => {
     }
 })
 
-//Update a User
+//Update a User & Google User
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
-    if(req.body.password){
+    console.log(req.params.id, 'ini masuk')
+    if (req.body.password) {
         req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString();
+        console.log(CryptoJS.AES.decrypt(req.body.password, process.env.PASS_SEC).toString(CryptoJS.enc.Utf8), 'hasil decrypt')
     }
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, {
-            $set: req.body,
-        },
-            { new: true }
-        );
-        const { password, ...others } = updatedUser._doc;
-        res.status(200).json(others);
+        if (req.user.userType === 1) {
+            const updatedUser = await User.findByIdAndUpdate(req.params.id, {
+                $set: req.body,
+            },
+                { new: true }
+            );
+            console.log(req.params.id, req.body, "ini reqw user kita")
+            const { password, ...others } = updatedUser._doc;
+            others.response = 1;
+            res.status(200).json(others);
+        }
+        else if (req.user.userType === 2) {
+            const updatedGoogle = await GoogleUser.findByIdAndUpdate(req.params.id, {
+                $set: req.body,
+            },
+                { new: true }
+            );
+            console.log(req.user, "ini req user")
+            updatedGoogle.response = 1;
+            res.status(200).json(updatedGoogle);
+        }
     } catch (err) {
         res.status(500).json(err);
     }
@@ -50,8 +72,8 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
 router.get("/find/:id", verifyTokenAndAuthorization, async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
-        const { password, ...others } = user._doc;
-        res.status(200).json(others);
+        // const { password, ...others } = user._doc;
+        res.status(200).json(user);
     } catch (err) {
         res.status(500).json(err);
     }
@@ -59,8 +81,9 @@ router.get("/find/:id", verifyTokenAndAuthorization, async (req, res) => {
 
 //Get All Users
 router.get("/", verifyTokenAndAdmin, async (req, res) => {
+    const query = req.query.new;
     try {
-        const users = await User.find().sort({_id:-1}).limit(5);
+        const users = query ? await User.find().sort({ _id: -1 }).limit(5) : await User.find();
         res.status(200).json(users);
     } catch (err) {
         res.status(500).json(err);
@@ -70,11 +93,11 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 //Get User Stats or Date
 router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
     const date = new Date();
-    const lastYear = new Date(date.setFullYear(date.getFullYear() - 1 ));
+    const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
 
     try {
         const data = await User.aggregate([
-            { $match: {createdAt: { $gte: lastYear } } },
+            { $match: { createdAt: { $gte: lastYear } } },
             {
                 $project: {
                     month: { $month: "$createdAt" },

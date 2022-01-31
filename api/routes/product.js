@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const Product = require("../models/Product")
-const {verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin} = require("./verifyToken");
+const { verifyToken, verifyTokenAndAuthorization, verifyTokenAndAdmin } = require("./verifyToken");
 
 //Create a Product
 router.post("/", verifyTokenAndAdmin, async (req, res) => {
@@ -21,6 +21,7 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
         },
             { new: true }
         );
+        updatedProduct.response = 1;
         res.status(200).json(updatedProduct);
     } catch (err) {
         res.status(500).json(err);
@@ -50,18 +51,18 @@ router.get("/find/:id", async (req, res) => {
 //Get All Products
 router.get("/", async (req, res) => {
     const qNew = req.query.new;
-    const qCategory= req.query.category;
+    const qCategory = req.query.category;
     try {
         let products;
         if (qNew) {
             products = await Product.find().sort({ createdAt: -1 }).limit(5);
-        }else if (qCategory) {
+        } else if (qCategory) {
             products = await Product.find({
                 categories: {
                     $in: [qCategory],
                 },
             });
-        }else{
+        } else {
             products = await Product.find();
         }
         res.status(200).json(products);

@@ -1,4 +1,5 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { sessionReducer, sessionService } from 'redux-react-session';
 import userReducer from "./userRedux";
 import cartReducer from "./cartRedux";
 import {
@@ -22,6 +23,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer,
+  session: sessionReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -36,4 +38,13 @@ export const store = configureStore({
     }),
 });
 
+// const validateSession = (session) => {
+//   // check if your session is still valid with a server check, through axios for instance
+//   return api.invokeRemoteSessionValidationThroughAxios(session).then(response => response.isSessionValid);
+// }
+const options = { refreshOnCheckAuth: true, redirectPath: '/login', driver: 'COOKIES' };
+
 export let persistor = persistStore(store);
+sessionService.initSessionService(store, options)
+  .then(() => console.log('Redux React Session is ready and a session was refreshed from your storage'))
+  .catch(() => console.log('Redux React Session is ready and there is no session in your storage'));

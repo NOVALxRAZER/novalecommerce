@@ -29,7 +29,7 @@ app.use(express.json());
 
 //Session
 app.use(session({
-    secret: 'keyboard-cat',
+    secret: process.env.PASS_SEC_SESS,
     maxAge: 24 * 60 * 60 * 100,
     resave: false,
     saveUninitialized: false,
@@ -41,50 +41,31 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //CORS Whitelist
-// let whitelist = [
-//     `http://localhost:3001/`,
-//     `http://localhost:4000/`,
-//     `http://localhost:8500/`,
-//     `https://accounts.google.com/`
-// ];
-
-// let corsOptionsDelegate =  (req, callback) => {
-//     let corsOptions;
-//     if(origin === undefined || whitelist.indexOf(req.header('Referer')) !== -1){
-//         // console.log(req.header('Referer'));
-//         corsOptions = {
-//             origin: true,
-//             methods: "GET,POST,PUT,DELETE",
-//             credentials: true,
-//         }
-//         callback(null, corsOptions)
-//     }else{
-//         callback(new Error('Not Allowed by CORS'))
-//     }
-// }
-// //CORS
-// app.use(cors(corsOptionsDelegate))
-
-//CORS Whitelist
 let whitelist = [
     `http://localhost:3001`,
     `http://localhost:4000`,
+    `http://localhost:4002`,
 ];
 
-let corsOptions = {
-    origin: (origin, callback) => {
-        if (origin === undefined || whitelist.indexOf(origin) !== -1) {
-            callback(null, true);
-        }
-        else {
-            callback(new Error('Not allowed by CORS'))
-        }
-    },
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
-}
+// let corsOptions = {
+//     origin: (origin, callback) => {
+//         if (origin === undefined || whitelist.indexOf(origin) !== -1) {
+//             callback(null, true);
+//         }
+//         else {
+//             callback(new Error('Not allowed by CORS'))
+//         }
+//     },
+//     methods: "GET,POST,PUT,DELETE",
+//     credentials: true,
+// }
+
 //CORS
-app.use(cors(corsOptions))
+app.use(cors({
+    origin: whitelist,
+    credentials: true,
+    methods: "GET,POST,PUT,DELETE",
+}))
 
 //Routers
 app.use("/users", userRouter);

@@ -3,9 +3,14 @@ const mongoose = require("mongoose")
 const GoogleUserSchema = new mongoose.Schema({
     googleId: {
         type: String,
+        unique: true,
         require: true
     },
-    displayName: {
+    email: {
+        type: String,
+        unique: true,
+    },
+    username: {
         type: String,
         require: true
     },
@@ -18,6 +23,16 @@ const GoogleUserSchema = new mongoose.Schema({
         require: true
     },
     image: {
+        type: String
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
+    phone: {
+        type: String
+    },
+    address: {
         type: String
     },
 }, 

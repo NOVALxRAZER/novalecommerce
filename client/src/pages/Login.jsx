@@ -6,11 +6,13 @@ import { mobile } from "../responsive"
 import { useHistory } from "react-router"
 import GoogleIcon from '@mui/icons-material/Google';
 import TextField from '@mui/material/TextField';
+import { baseURL } from "../requestMethods"
+import RazerBG from "../images/razerbg1.jpg"
 
 const Container = styled.div`
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(rgba(255,255,255, 0.5), rgba(255,255,255, 0.5)), url("https://i2.wp.com/wowfakta.com/wp-content/uploads/2021/10/1633450814_Kolaborasi-Razer-X-miHoYo-Jangkau-Lebih-Banyak-Gamer-Genshin-Impact.jpg?fit=1080%2C720&ssl=1") center;
+    background: url(${RazerBG}) center;
     background-size: 100vw 100vh;
     display: flex;
     align-items: center;
@@ -21,7 +23,7 @@ const Wrapper = styled.div`
     padding: 20px;
     background-color: #e5fae5;
     border-radius: 10px;
-    ${mobile({width: "75%"})}
+    ${mobile({ width: "75%" })}
 `
 const Title = styled.h1`
     display: flex;
@@ -123,8 +125,8 @@ const RegisterButton = styled.button`
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [errors, setErrors] = useState({username});
-    const [errors1, setErrors1] = useState({password});
+    const [errors, setErrors] = useState({ username });
+    const [errors1, setErrors1] = useState({ password });
     const [values, setValues] = useState({
         username: '',
         password: '',
@@ -136,24 +138,24 @@ export default function Login() {
     });
 
     const handleChange = (e) => {
-        setValues({ ...values, [e.target.name]: e.target.value})
+        setValues({ ...values, [e.target.name]: e.target.value })
         setErrors({ username: '' })
         setUsername(e.target.value);
     }
 
     const handleChange1 = (e) => {
-        setValues({ ...values, [e.target.name]: e.target.value})
+        setValues({ ...values, [e.target.name]: e.target.value })
         setErrors1({ password: '' })
         setPassword(e.target.value);
     }
 
     const handleClick = (e) => {
         e.preventDefault();
-        if(!username){
+        if (!username) {
             setErrors({ username: "Username is Required!" })
-        }if(!password){
+        } if (!password) {
             setErrors1({ password: "Password is Required!" })
-        }if(values.username && values.password){
+        } if (values.username && values.password) {
             login(dispatch, {
                 ...values,
             })
@@ -162,16 +164,16 @@ export default function Login() {
     };
 
     const google = () => {
-        window.open("http://localhost:8500/auth/google", "_self")
+        window.open(`${baseURL}/auth/google`, "_self")
     }
-    
+
     return (
         <Container>
-             <Wrapper>
+            <Wrapper>
                 <Title>LOGIN TO YOUR ACCOUNT</Title>
                 <Form>
                     <Label>Username</Label>
-                    <TextField 
+                    <TextField
                         label="Username"
                         id="outlined-basic"
                         type="text"
@@ -182,7 +184,7 @@ export default function Login() {
                         helperText={(errors?.username)}
                     />
                     <Label>Password</Label>
-                    <TextField 
+                    <TextField
                         label="Password"
                         id="outlined-basic"
                         type="password"
@@ -196,7 +198,7 @@ export default function Login() {
                     <Center>
                         <Button onClick={handleClick} disabled={isFetching}>LOGIN</Button>
                         <Or>OR</Or>
-                        <GoogleButton onClick={google}><GoogleIcon style={{marginLeft: "-10px", marginRight: "10px"}}/>Login With Google</GoogleButton>
+                        <GoogleButton onClick={google}><GoogleIcon style={{ marginLeft: "-10px", marginRight: "10px" }} />Login With Google</GoogleButton>
                     </Center>
                     <Span>Don't have any Account?</Span>
                     <Link href="/register">
