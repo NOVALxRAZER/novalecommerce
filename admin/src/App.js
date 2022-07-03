@@ -10,6 +10,7 @@ import ProductList from "./pages/productList/ProductList";
 import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
 import Login from "./pages/login/Login";
+import AllOrderHistory from "./pages/orderHistory/AllOrderHistory"
 import { useSelector } from "react-redux";
 import React, { useEffect } from "react";
 
@@ -68,6 +69,9 @@ const PrivateRoutes = ({ isAdmin, ...props }) => {
                         </Route>
                         <Route path="/newproduct">
                             <NewProduct />
+                        </Route>
+                        <Route path="/orderlist">
+                            <AllOrderHistory />
                         </Route>
                         <Route path="/login">
                             <Login />

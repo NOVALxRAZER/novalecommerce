@@ -167,6 +167,8 @@ export default function Product() {
         setColor(e.target.value);
     };
 
+    const formatter = new Intl.NumberFormat("rp-RP", {currency: 'IDR', style: 'currency'});
+
     return (
         <Container>
             <>
@@ -199,7 +201,7 @@ export default function Product() {
                 <InfoContainer>
                     <Title>{product.title}</Title>
                     <Desc>{product.desc}</Desc>
-                    <Price>{"$ " + product.price}</Price>
+                    <Price>{formatter.format(product.price)}</Price>
                     <FilterContainer>
                         <Filter>
                             <FilterTitle>Color :</FilterTitle>

@@ -63,6 +63,18 @@ import {
     addProductFailure,
     initialAddProduct,
 } from "./browseProductsRedux/addProductRedux";
+import {
+    getAllOrderStart,
+    getAllOrderSuccess,
+    getAllOrderError,
+    initialGetOrderUser,
+} from "./browseOrderHistory/AllUserOrder"
+import {
+    editUserOrderStart,
+    editUserOrderSuccess,
+    editUserOrderError,
+    initialEditOrderUser,
+} from "./browseOrderHistory/editUserOrder"
 
 //----------------------------Login Logout User----------------------------//
 export const login = async (dispatch, user) => {
@@ -264,4 +276,42 @@ export const addProduct = async (product, dispatch) => {
 
 export const stateAddProduct = async (dispatch) => {
     dispatch(initialAddProduct());
+}
+
+//------------------------------- Get All User Orders -----------------------------//
+export const getAllOrderUser = async (dispatch) => {
+    dispatch(getAllOrderStart());
+    try {
+        const res = await userRequest.get(`/orders`, {
+            headers: {
+                token: "Bearer " + JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser.accessToken,
+            },
+        })
+        dispatch(getAllOrderSuccess(res.data));
+    } catch (err) {
+        dispatch(getAllOrderError());
+    }
+};
+
+export const stateGetAllUserOrder = async (dispatch) => {
+    dispatch(initialGetOrderUser());
+}
+
+//--------------------------- Edit User Order ------------------------//
+export const editUserOrder = async (dispatch, id, data) => {
+    dispatch(editUserOrderStart());
+    try {
+        const res = await userRequest.put(`/orders/${id}`, data, {
+            headers: {
+                token: "Bearer " + JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser.accessToken,
+            },
+        })
+        dispatch(editUserOrderSuccess(res.data));
+    } catch (err) {
+        dispatch(editUserOrderError());
+    }
+};
+
+export const stateEditOrderUser = async (dispatch) => {
+    dispatch(initialEditOrderUser());
 }

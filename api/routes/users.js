@@ -38,7 +38,7 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
             },
                 { new: true }
             );
-            console.log(req.params.id, req.body, "ini reqw user kita")
+            // console.log(req.params.id, req.body, "ini reqw user kita")
             const { password, ...others } = updatedUser._doc;
             others.response = 1;
             res.status(200).json(others);
@@ -49,7 +49,7 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
             },
                 { new: true }
             );
-            console.log(req.user, "ini req user")
+            // console.log(req.user, "ini req user")
             updatedGoogle.response = 1;
             res.status(200).json(updatedGoogle);
         }

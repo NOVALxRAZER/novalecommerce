@@ -205,7 +205,7 @@ export default function NewUser() {
                         id="Password"
                         label="Password"
                         variant="standard"
-                        type="text"
+                        type="password"
                         name="password"
                         placeholder="Input Password"
                         onChange={handleChange2}

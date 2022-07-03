@@ -12,6 +12,15 @@ import {
     updateUserSuccess,
     updateUserFailure,
 } from "./userRedux"
+import {
+    orderStart,
+    orderSuccess,
+    orderError,
+    newOrderStart,
+    newOrderSuccess,
+    newOrderError,
+    initialGetOrderUser,
+} from "./orderRedux"
 
 export const login = async (dispatch, user) => {
     dispatch(loginStart());
@@ -61,3 +70,40 @@ export const updateUser = async (id, user, dispatch) => {
         dispatch(updateUserFailure());
     }
 };
+
+export const getUserOrder = async (id, dispatch) => {
+    dispatch(orderStart());
+    try {
+        const res = await userRequest.get(`/orders/find/${id}`, {
+            headers: {
+                token: "Bearer " + JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser.accessToken,
+            },
+        });
+        dispatch(orderSuccess(res.data));
+    } catch (err) {
+        dispatch(orderError());
+    }
+}
+
+export const stateGetUserOrder = async (dispatch) => {
+    dispatch(initialGetOrderUser());
+}
+
+export const newUserOrder = async (dispatch, data) => {
+    console.log("masuk")
+    console.log(dispatch, "dispatch")
+    dispatch(newOrderStart());
+    console.log(JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser.accessToken, "token")
+    try {
+        const res = await userRequest.post(`/orders`, data,{
+            headers: {
+                token: "Bearer " + JSON.parse(JSON.parse(localStorage.getItem("persist:root")).user).currentUser.accessToken,
+            },
+        });
+        console.log(res, "ini respon");
+        dispatch(newOrderSuccess(res.data));
+    } catch (err) {
+        console.log("ini error", err)
+        dispatch(newOrderError());
+    }
+}

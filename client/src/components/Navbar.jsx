@@ -200,6 +200,9 @@ export default function Navbar() {
                         <Link to={`/profile/${player?._id}`} style={{ textDecoration: "none", color: "black" }}>
                             <MenuItem>Profile</MenuItem>
                         </Link>
+                        <Link to={`/orderlist/${player?._id}`} style={{ textDecoration: "none", color: "black" }}>
+                            <MenuItem>Order History</MenuItem>
+                        </Link>
                     </Menu>
                 </Right>
             </Wrapper>

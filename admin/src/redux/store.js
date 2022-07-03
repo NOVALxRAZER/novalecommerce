@@ -10,6 +10,8 @@ import getProductReducer from "./browseProductsRedux/getProductRedux"
 import editProductReducer from "./browseProductsRedux/editProductRedux"
 import deleteProductReducer from "./browseProductsRedux/deleteProductRedux"
 import addProductReducer from "./browseProductsRedux/addProductRedux"
+import getAllUserOrderReducer from "./browseOrderHistory/AllUserOrder"
+import editOrderUsers from "./browseOrderHistory/editUserOrder"
 import {
   persistStore,
   persistReducer,
@@ -40,6 +42,8 @@ const rootReducer = combineReducers({
   editProducts: editProductReducer,
   deleteProducts: deleteProductReducer,
   addProducts: addProductReducer,
+  getAllUserOrders: getAllUserOrderReducer,
+  editUserOrder: editOrderUsers,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
